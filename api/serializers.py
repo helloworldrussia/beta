@@ -6,4 +6,4 @@ from api.models import Worker
 class WorkerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Worker
-        fields = ['name', 'jobs', 'coins', 'status']
+        fields = ['name', 'jobs', 'coins', 'status', 'deals']
