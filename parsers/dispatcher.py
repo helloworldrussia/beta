@@ -4,6 +4,7 @@ from datetime import datetime
 
 from binance import Client
 
+from api.models import Worker
 from gd.config import b_secret, b_client
 from parsers.backend import Coin
 
@@ -26,56 +27,27 @@ from parsers.backend import Coin
 ]"""
 
 client = Client(b_client, b_secret)
+name = 'DOGEUSDT'
 
 
-def start_thread(coins_list):
-    i = 1
-    for coin in coins_list:
-        if i == 200:
-            print('Запущено 200 потокov. Пауза.')
-            break
-        th = threading.Thread(target=main, args=(coin,))
-        th.start()
-        i += 1
-        coins_list.remove(coin)
-    return coins_list
+def start_coin():
+    coin = Coin(name, client, False)
+    rows = coin.get_klines()[-3:]
+    print(rows)
+    data = []
+    for row in rows:
+        row = coin.get_status(row)
+        data.append(row)
+    try:
+        worker = Worker.objects.get(name='DOGEUSDT')
+    except:
+        worker = Worker()
+        worker.name = 'DOGEUSDT'
+        worker.jobs = 0
+        worker.coins = 0
+    data = data[-1]
+    worker.status = f'{name} Price: {data["c_price"]} First Volume: {data["first_volume"]}' \
+                    f' Second Volume: {data["second_volume"]}'
 
-
-def main(coin):
-    coin = Coin(coin, client, False)
-    klines = coin.get_klines()[-36:]
-    middle = coin.get_middle(klines)
-    if not middle:
-        return None
-    message = coin.b_ready(middle)
-    # print(message)
-
-
-info = client.get_exchange_info()
-coins_list = []
-i = 1
-for x in info['symbols']:
-    coins_list.append(x['symbol'])
-    i += 1
-
-print('Обнаружено пар: ', len(coins_list))
-coins_list = start_thread(coins_list)
-start_thread(coins_list)
-
-i = 1
-while True:
-    print('Active count:', threading.active_count())
-    time.sleep(61)
-    empty = []
-    if coins_list != empty:
-        coins_list = start_thread(coins_list)
-
-# coin = Coin(coin, client, False)
-# klines = coin.get_klines()[-36:]
-# res = coin.get_middle(klines)
-# print(coin.name, res, len(klines))
-
-
-# threading.active_count()
-# print(coin.get_status(klines[-1]))
-# print('CURRENT:', coin.name, "\nKLINES:", len(klines))
+    worker.save()
+    return worker.status

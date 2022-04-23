@@ -57,21 +57,12 @@ class Coin:
 
     def get_klines(self):
         date = str(datetime.now()).split(' ')[0]
+        date = '2022-04-23'
         klines = self.client.get_historical_klines(f"{self.name}", Client.KLINE_INTERVAL_5MINUTE, f"{date}")
+        print(klines)
         return klines
 
     def get_status(self, row):
-        # if param == 'actual':
-        #     row = klines[-1]
-        #     one_more_row = klines[-2]
-        #
-        # if param == '':
-        #     row = klines[-2]
-        #     one_more_row = klines[-3]
-        # else:
-        #     row = klines[-3]
-        #     one_more_row = klines[-4]
-
         doge_volume, usdt_volume, c_price, H, L = row[5], row[7], row[4], row[2], row[3]
         open_vs_close = float(row[1]) - float(c_price)
         if open_vs_close <= 0:
@@ -102,36 +93,3 @@ class Coin:
             quantity=98)
         price = order['fills'][0]['price']
         return price
-
-    # def sell(self, price):
-    #     try:
-    #         order = self.client.order_limit_sell(
-    #             symbol=self.name,
-    #             quantity=97,
-    #             price=price)
-    #     except:
-    #         order = self.client.order_limit_sell(
-    #             symbol=self.name,
-    #             quantity=96,
-    #             price=price)
-    #     # print(order.Id)
-    #     print(f'try to SELL {price}')
-    #     signal = 1
-    #     i = 0
-    #     while signal == 1:
-    #         time.sleep(10)
-    #         check = self.client.get_order(
-    #             symbol=self.name,
-    #             orderId=f'{order["orderId"]}')
-    #         print(check['status'])
-    #         if check['status'] == 'FILLED':
-    #             signal = 0
-    #
-    # def depth(self):
-    #     depth = self.client.get_order_book(symbol=self.name)
-    #     asks_count, bids_count = 0, 0
-    #     for x in depth['asks']:
-    #         asks_count += float(x[1])
-    #     for x in depth['bids']:
-    #         bids_count += float(x[1])
-    #     return {"продают": asks_count, "покупают": bids_count, "k": asks_count - bids_count}
