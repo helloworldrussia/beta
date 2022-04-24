@@ -86,6 +86,7 @@ def check_successful(data):
     for row in data:
         if row['successful'] == 1:
             successful += 1
+        print(row['successful'])
     if successful == len(data):
         return True
     else:

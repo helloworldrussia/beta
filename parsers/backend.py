@@ -59,7 +59,6 @@ class Coin:
         date = str(datetime.now()).split(' ')[0]
         # date = '2022-04-23'
         klines = self.client.get_historical_klines(f"{self.name}", Client.KLINE_INTERVAL_5MINUTE, f"{date}")
-        print(klines)
         return klines
 
     def get_status(self, row):
