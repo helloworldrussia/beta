@@ -42,20 +42,20 @@ def get_model():
     return worker
 
 
-async def demo(object):
+def demo(object):
     deal = Deal()
     now = object.get_klines()[-1]
     now = object.get_status(now)
     buy_price = now['c_price']
     time_now = datetime.now().strftime('%H:%M %m-%d')
-    buy_message = f'Момент. Цена: {buy_price} [{time_now}]'
+    deal.begin = f'Момент. Цена: {buy_price} [{time_now}]'
     while True:
         now = object.get_klines()[-1]
         now = object.get_status(now)
         now = now['c_price']
         time_now = datetime.now().strftime('%H:%M %m-%d')
         if float(now)-float(buy_price) >= 0.0004:
-            deal.begin = f'Момент Продажи. Цена: {now} [{time_now}]'
+            deal.end = f'Момент Продажи. Цена: {now} [{time_now}]'
             deal.save()
             worker = get_model()
             worker.deals.add(deal)
