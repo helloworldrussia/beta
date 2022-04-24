@@ -94,21 +94,16 @@ def check_successful(data):
 
 
 def main(coin):
-    klines = coin.get_klines()[-3:]
-    rows = []
-    for kline in klines:
-        res = coin.get_status(kline)
-        rows.append(res)
-    rows = check_color(rows)
-    if check_successful(rows):
-        demo(coin)
-
-
-def start():
     while True:
-        print(datetime.now())
-        main()
-        time.sleep(300)
+        klines = coin.get_klines()[-3:]
+        rows = []
+        for kline in klines:
+            res = coin.get_status(kline)
+            rows.append(res)
+        rows = check_color(rows)
+        if check_successful(rows):
+            demo(coin)
+        # time.sleep(300)
 
 
 def start_coin():
