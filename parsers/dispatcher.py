@@ -50,6 +50,7 @@ def demo(object):
     time_now = datetime.now().strftime('%H:%M %m-%d')
     deal.begin = f'Момент. Цена: {buy_price} [{time_now}]'
     while True:
+        print('Сравниваем')
         now = object.get_klines()[-1]
         now = object.get_status(now)
         now = now['c_price']
@@ -103,7 +104,7 @@ def main(coin):
         rows = check_color(rows)
         if check_successful(rows):
             demo(coin)
-        # time.sleep(300)
+        time.sleep(300)
 
 
 def start_coin():
